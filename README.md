@@ -14,6 +14,15 @@ Bot Orchestrator Hub è la **spina dorsale** per tutti i tuoi bot e automazioni.
 - ✅ **Protocollo standardizzato** - Comunicazione uniforme con tutti gli script satelliti
 - ✅ **Free Tier compliant** - Progettato per rimanere nei limiti gratuiti di Google Cloud
 
+## 🤖 Comandi Attivi
+
+| Comando | Descrizione | Tipo |
+|---------|-------------|------|
+| `/start` | Messaggio di benvenuto | 🔧 Built-in |
+| `/help` | Lista comandi | 🔧 Built-in |
+| `/test` | Debug e info chat | 🔧 Built-in |
+| `/report` | Genera report spese palestra | 🔗 Satellite (Script Spese) |
+
 ## 📁 Struttura del Progetto
 
 ```

@@ -9,17 +9,17 @@ param(
 
 $ErrorActionPreference = "Stop"
 
-Write-Host "🚀 Deploying Bot Orchestrator..." -ForegroundColor Cyan
+Write-Host ">>> Deploying Bot Orchestrator..." -ForegroundColor Cyan
 
 # Set project
 gcloud config set project $ProjectId
 
 # Build
-Write-Host "📦 Building container..." -ForegroundColor Yellow
+Write-Host ">>> Building container..." -ForegroundColor Yellow
 gcloud builds submit --tag "gcr.io/$ProjectId/$ServiceName"
 
 # Deploy
-Write-Host "🌐 Deploying to Cloud Run..." -ForegroundColor Yellow
+Write-Host ">>> Deploying to Cloud Run..." -ForegroundColor Yellow
 gcloud run deploy $ServiceName `
     --image "gcr.io/$ProjectId/$ServiceName" `
     --platform managed `
@@ -30,4 +30,4 @@ gcloud run deploy $ServiceName `
     --set-secrets "TELEGRAM_TOKEN=telegram-bot-token:latest,ORCHESTRATOR_SECRET=orchestrator-secret:latest"
 
 $ServiceUrl = (gcloud run services describe $ServiceName --region $Region --format="value(status.url)")
-Write-Host "✅ Deployed to: $ServiceUrl" -ForegroundColor Green
+Write-Host "[SUCCESS] Deployed to: $ServiceUrl" -ForegroundColor Green

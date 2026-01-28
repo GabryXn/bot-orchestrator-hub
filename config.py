@@ -64,21 +64,14 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
         "handler_type": "builtin",
     },
     # ==========================================================================
-    # SATELLITE COMMANDS - Add your external script integrations here
+    # SATELLITE COMMANDS
     # ==========================================================================
-    # Example:
-    # "/report": {
-    #     "description": "Genera un report giornaliero",
-    #     "handler_type": "satellite",
-    #     "target_url": "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
-    #     "action_name": "generate_report",
-    # },
-    # "/spese": {
-    #     "description": "Registra una nuova spesa",
-    #     "handler_type": "satellite",
-    #     "target_url": "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec",
-    #     "action_name": "log_expense",
-    # },
+    "/report": {
+        "description": "Genera report spese palestra",
+        "handler_type": "satellite",
+        "target_url": "https://script.google.com/macros/s/AKfycbwSICkW_XDdpaK89VvrAAnTvIhD6TVNMX6Z9i5cXEYJ9qAPit8GRfp0n3fjPoaAOjVY/exec",
+        "action_name": "process_gym_receipts",
+    },
 }
 
 
