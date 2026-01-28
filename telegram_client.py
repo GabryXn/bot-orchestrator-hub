@@ -4,7 +4,7 @@ Provides async methods for interacting with the Telegram Bot API.
 """
 
 import logging
-from typing import Optional, Dict, Any
+from typing import Optional, Dict, Any, Union
 import httpx
 
 from config import TELEGRAM_API_BASE, TELEGRAM_TOKEN
@@ -42,7 +42,7 @@ class TelegramClient:
         self,
         chat_id: int,
         text: str,
-        parse_mode: Optional[ParseMode] = None,
+        parse_mode: Optional[Union[ParseMode, str]] = None,
         disable_notification: bool = False,
         reply_to_message_id: Optional[int] = None,
     ) -> Dict[str, Any]:
@@ -52,7 +52,7 @@ class TelegramClient:
         Args:
             chat_id: Target chat ID
             text: Message text
-            parse_mode: Optional parse mode (HTML, Markdown, MarkdownV2)
+            parse_mode: Optional parse mode (HTML, Markdown, MarkdownV2) - accepts string or ParseMode enum
             disable_notification: Send silently
             reply_to_message_id: Reply to a specific message
             
@@ -65,7 +65,8 @@ class TelegramClient:
         }
         
         if parse_mode:
-            data["parse_mode"] = parse_mode.value
+            # Handle both string and enum
+            data["parse_mode"] = parse_mode.value if isinstance(parse_mode, ParseMode) else parse_mode
         if disable_notification:
             data["disable_notification"] = True
         if reply_to_message_id:
