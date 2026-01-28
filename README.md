@@ -126,6 +126,23 @@ Il progetto è ottimizzato per rimanere nei limiti gratuiti:
 - [EXTENDING.md](docs/EXTENDING.md) - Come aggiungere comandi
 - [PROTOCOL.md](docs/PROTOCOL.md) - Specifiche protocollo
 
+## 🔧 Risoluzione Problemi Comuni
+
+### ⚠️ Errore: "Invalid non-printable ASCII character in URL"
+
+Se vedi questo errore nei log di Cloud Run, significa che il **Telegram Token** salvato in Secret Manager contiene caratteri invisibili (come `\r` o `\n`) alla fine.
+
+**Soluzione:**
+
+1. Abbiamo aggiunto `.strip()` in `config.py` per risolvere via codice.
+2. Per pulire il secret: crea il secret usando `echo -n` per evitare newline, oppure usa un file temporaneo verificato con un editor hex.
+
+### ⚠️ Bot non risponde
+
+1. Controlla i log: `gcloud run services logs read bot-orchestrator --region europe-west1`
+2. Verifica endpoint health: `https://[TUO-URL]/health`
+3. Controlla che il webhook sia settato correttamente.
+
 ## 🛠️ Sviluppo Locale
 
 ```powershell
