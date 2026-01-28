@@ -3,7 +3,7 @@
 
 param(
     [string]$ProjectId = "bot-orchestrator-hub",
-    [string]$Region = "us-central1",
+    [string]$Region = "europe-west1",
     [string]$ServiceName = "bot-orchestrator"
 )
 
