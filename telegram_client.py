@@ -36,6 +36,7 @@ class TelegramClient:
                 return result
             except Exception as e:
                 logger.error(f"Request to Telegram failed: {e}")
+                logger.error(f"Failed URL (repr): {repr(url)}")
                 return {"ok": False, "error": str(e)}
     
     async def send_message(

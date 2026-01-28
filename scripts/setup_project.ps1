@@ -4,7 +4,7 @@
 
 param(
     [string]$ProjectId = "bot-orchestrator-hub",
-    [string]$Region = "us-central1",
+    [string]$Region = "europe-west1",
     [string]$ServiceName = "bot-orchestrator"
 )
 
@@ -30,21 +30,23 @@ $secretExists = gcloud secrets describe telegram-bot-token 2>$null
 if ($LASTEXITCODE -eq 0) {
     Write-Host "Secret 'telegram-bot-token' already exists. Adding new version..." -ForegroundColor Gray
     $PlainToken | gcloud secrets versions add telegram-bot-token --data-file=-
-} else {
+}
+else {
     Write-Host "Creating new secret 'telegram-bot-token'..." -ForegroundColor Gray
     $PlainToken | gcloud secrets create telegram-bot-token --data-file=-
 }
 
 # 3. Create secret for orchestrator key
 Write-Host "[3/7] Creating orchestrator secret key..." -ForegroundColor Yellow
-$OrchestratorSecret = -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 32 | ForEach-Object {[char]$_})
+$OrchestratorSecret = -join ((65..90) + (97..122) + (48..57) | Get-Random -Count 32 | ForEach-Object { [char]$_ })
 Write-Host "Generated secret: $OrchestratorSecret" -ForegroundColor Gray
 Write-Host "SAVE THIS SECRET! You'll need it to authenticate API calls." -ForegroundColor Red
 
 $secretExists = gcloud secrets describe orchestrator-secret 2>$null
 if ($LASTEXITCODE -eq 0) {
     $OrchestratorSecret | gcloud secrets versions add orchestrator-secret --data-file=-
-} else {
+}
+else {
     $OrchestratorSecret | gcloud secrets create orchestrator-secret --data-file=-
 }
 

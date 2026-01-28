@@ -12,10 +12,10 @@ from typing import Dict, Any
 # =============================================================================
 
 # Telegram Bot Token - REQUIRED
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "")
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "").strip()
 
 # Shared secret for authenticating satellite scripts and API calls
-ORCHESTRATOR_SECRET = os.getenv("ORCHESTRATOR_SECRET", "dev-secret-key")
+ORCHESTRATOR_SECRET = os.getenv("ORCHESTRATOR_SECRET", "dev-secret-key").strip()
 
 # Project metadata
 PROJECT_ID = os.getenv("GCP_PROJECT_ID", "bot-orchestrator-hub")
@@ -23,6 +23,9 @@ SERVICE_NAME = os.getenv("SERVICE_NAME", "bot-orchestrator")
 
 # Logging level
 LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
+
+# Telegram API base URL
+TELEGRAM_API_BASE = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
 
 # =============================================================================
