@@ -110,6 +110,18 @@ class SatelliteResponse(BaseModel):
 # PROACTIVE MESSAGE API MODELS
 # =============================================================================
 
+class InlineKeyboardButton(BaseModel):
+    """Single inline keyboard button."""
+    text: str
+    url: Optional[str] = None
+    callback_data: Optional[str] = None
+
+
+class InlineKeyboardMarkup(BaseModel):
+    """Inline keyboard markup (rows of buttons)."""
+    inline_keyboard: List[List[InlineKeyboardButton]]
+
+
 class MessageTarget(BaseModel):
     """Target for a proactive message."""
     chat_id: int
@@ -120,6 +132,7 @@ class MessageContent(BaseModel):
     text: str
     parse_mode: Optional[ParseMode] = None
     disable_notification: bool = False
+    reply_markup: Optional[InlineKeyboardMarkup] = None
 
 
 class ProactiveMessageRequest(BaseModel):
@@ -139,6 +152,18 @@ class ProactiveMessageResponse(BaseModel):
     success: bool
     message_id: Optional[int] = None
     error: Optional[str] = None
+
+
+class EditMessageRequest(BaseModel):
+    """
+    Request format: External Script → Orchestrator (to edit a message).
+    POST /api/edit
+    """
+    auth_key: str
+    platform: Platform = Platform.TELEGRAM
+    target: MessageTarget
+    message_id: int
+    message: MessageContent
 
 
 # =============================================================================

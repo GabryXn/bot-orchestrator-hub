@@ -46,6 +46,7 @@ class TelegramClient:
         parse_mode: Optional[Union[ParseMode, str]] = None,
         disable_notification: bool = False,
         reply_to_message_id: Optional[int] = None,
+        reply_markup: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """
         Send a text message to a chat.
@@ -56,6 +57,7 @@ class TelegramClient:
             parse_mode: Optional parse mode (HTML, Markdown, MarkdownV2) - accepts string or ParseMode enum
             disable_notification: Send silently
             reply_to_message_id: Reply to a specific message
+            reply_markup: Optional inline keyboard markup
             
         Returns:
             Telegram API response
@@ -72,8 +74,44 @@ class TelegramClient:
             data["disable_notification"] = True
         if reply_to_message_id:
             data["reply_to_message_id"] = reply_to_message_id
+        if reply_markup:
+            data["reply_markup"] = reply_markup
         
         return await self._request("sendMessage", data)
+    
+    async def edit_message_text(
+        self,
+        chat_id: int,
+        message_id: int,
+        text: str,
+        parse_mode: Optional[Union[ParseMode, str]] = None,
+        reply_markup: Optional[Dict[str, Any]] = None,
+    ) -> Dict[str, Any]:
+        """
+        Edit the text of an existing message.
+        
+        Args:
+            chat_id: Target chat ID
+            message_id: ID of the message to edit
+            text: New message text
+            parse_mode: Optional parse mode
+            reply_markup: Optional inline keyboard markup
+            
+        Returns:
+            Telegram API response
+        """
+        data = {
+            "chat_id": chat_id,
+            "message_id": message_id,
+            "text": text,
+        }
+        
+        if parse_mode:
+            data["parse_mode"] = parse_mode.value if isinstance(parse_mode, ParseMode) else parse_mode
+        if reply_markup:
+            data["reply_markup"] = reply_markup
+        
+        return await self._request("editMessageText", data)
     
     async def set_webhook(self, url: str, secret_token: Optional[str] = None) -> Dict[str, Any]:
         """
