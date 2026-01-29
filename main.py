@@ -30,6 +30,7 @@ from models import (
     TelegramUpdate, 
     ProactiveMessageRequest, 
     ProactiveMessageResponse,
+    EditMessageRequest,
     ParseMode,
 )
 from router import parse_telegram_update, route_message
@@ -164,11 +165,17 @@ async def send_proactive_message(request: ProactiveMessageRequest):
     # Route based on platform
     if request.platform.value == "telegram":
         try:
+            # Convert reply_markup to dict if present
+            reply_markup = None
+            if request.message.reply_markup:
+                reply_markup = request.message.reply_markup.model_dump()
+            
             result = await telegram_client.send_message(
                 chat_id=request.target.chat_id,
                 text=request.message.text,
                 parse_mode=request.message.parse_mode,
                 disable_notification=request.message.disable_notification,
+                reply_markup=reply_markup,
             )
             
             if result.get("ok"):
@@ -182,6 +189,55 @@ async def send_proactive_message(request: ProactiveMessageRequest):
                 
         except Exception as e:
             logger.error(f"Error sending proactive message: {e}")
+            return ProactiveMessageResponse(success=False, error=str(e))
+    
+    else:
+        return ProactiveMessageResponse(
+            success=False, 
+            error=f"Platform {request.platform.value} not yet supported"
+        )
+
+
+@app.post("/api/edit", response_model=ProactiveMessageResponse)
+async def edit_message(request: EditMessageRequest):
+    """
+    API endpoint for external scripts to edit existing messages.
+    
+    Useful for progress indicators: send initial message, then edit with final result.
+    
+    Authentication: Include the ORCHESTRATOR_SECRET in the auth_key field.
+    """
+    # Verify authentication
+    if request.auth_key != ORCHESTRATOR_SECRET:
+        logger.warning(f"Unauthorized API edit attempt")
+        raise HTTPException(status_code=401, detail="Invalid auth_key")
+    
+    # Route based on platform
+    if request.platform.value == "telegram":
+        try:
+            # Convert reply_markup to dict if present
+            reply_markup = None
+            if request.message.reply_markup:
+                reply_markup = request.message.reply_markup.model_dump()
+            
+            result = await telegram_client.edit_message_text(
+                chat_id=request.target.chat_id,
+                message_id=request.message_id,
+                text=request.message.text,
+                parse_mode=request.message.parse_mode,
+                reply_markup=reply_markup,
+            )
+            
+            if result.get("ok"):
+                logger.info(f"Message {request.message_id} edited successfully")
+                return ProactiveMessageResponse(success=True, message_id=request.message_id)
+            else:
+                error = result.get("error", "Unknown error")
+                logger.error(f"Failed to edit message: {error}")
+                return ProactiveMessageResponse(success=False, error=error)
+                
+        except Exception as e:
+            logger.error(f"Error editing message: {e}")
             return ProactiveMessageResponse(success=False, error=str(e))
     
     else:

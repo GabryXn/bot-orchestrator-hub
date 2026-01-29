@@ -63,6 +63,16 @@ COMMAND_REGISTRY: Dict[str, Dict[str, Any]] = {
         "description": "Verifica che il bot sia online",
         "handler_type": "builtin",
     },
+    "/status": {
+        "description": "Mostra lo stato del sistema",
+        "handler_type": "builtin",
+    },
+    "/sheet": {
+        "description": "Apri il foglio spese",
+        "handler_type": "satellite",
+        "target_url": "https://script.google.com/macros/s/REDACTED_SCRIPT_ID/exec",
+        "action_name": "get_sheet_link",
+    },
     # ==========================================================================
     # SATELLITE COMMANDS
     # ==========================================================================

@@ -21,6 +21,9 @@ Bot Orchestrator Hub è la **spina dorsale** per tutti i tuoi bot e automazioni.
 | `/start` | Messaggio di benvenuto | 🔧 Built-in |
 | `/help` | Lista comandi | 🔧 Built-in |
 | `/test` | Debug e info chat | 🔧 Built-in |
+| `/ping` | Verifica che il bot sia online | 🔧 Built-in |
+| `/status` | Mostra stato del sistema | 🔧 Built-in |
+| `/sheet` | Apri il foglio spese | 🔗 Satellite (Script Spese) |
 | `/report` | Genera report spese palestra | 🔗 Satellite (Script Spese) |
 
 ## 📁 Struttura del Progetto
@@ -110,6 +113,61 @@ UrlFetchApp.fetch("https://bot-orchestrator.run.app/api/send", {
     platform: "telegram",
     target: { chat_id: 123456789 },
     message: { text: "Notifica!", parse_mode: "HTML" }
+  })
+});
+```
+
+### Inviare Messaggi con Bottoni Inline
+
+Puoi aggiungere bottoni cliccabili ai tuoi messaggi:
+
+```javascript
+// Apps Script - Messaggio con bottone
+UrlFetchApp.fetch("https://bot-orchestrator.run.app/api/send", {
+  method: "post",
+  contentType: "application/json",
+  payload: JSON.stringify({
+    auth_key: "TUA_CHIAVE",
+    platform: "telegram",
+    target: { chat_id: 123456789 },
+    message: {
+      text: "Clicca il bottone per aprire il link!",
+      parse_mode: "HTML",
+      reply_markup: {
+        inline_keyboard: [[
+          { text: "📊 Apri Foglio", url: "https://docs.google.com/spreadsheets/d/ID" }
+        ]]
+      }
+    }
+  })
+});
+```
+
+**Struttura bottoni:**
+
+- `text`: Testo visualizzato sul bottone
+- `url`: Link da aprire (opzionale)
+- `callback_data`: Dati per callback (opzionale, per interazioni avanzate)
+
+### Modificare Messaggi Esistenti
+
+Usa l'endpoint `/api/edit` per aggiornare messaggi già inviati (utile per indicatori di progresso):
+
+```javascript
+// 1. Invia messaggio iniziale e salva message_id
+const response = UrlFetchApp.fetch("https://bot-orchestrator.run.app/api/send", {...});
+const { message_id } = JSON.parse(response.getContentText());
+
+// 2. Modifica il messaggio
+UrlFetchApp.fetch("https://bot-orchestrator.run.app/api/edit", {
+  method: "post",
+  contentType: "application/json",
+  payload: JSON.stringify({
+    auth_key: "TUA_CHIAVE",
+    platform: "telegram",
+    target: { chat_id: 123456789 },
+    message_id: message_id,
+    message: { text: "✅ Processo completato!", parse_mode: "HTML" }
   })
 });
 ```

@@ -34,6 +34,8 @@ async def handle_builtin_command(ctx: RouterContext) -> Optional[str]:
         return await _handle_test(ctx)
     elif command == "/ping":
         return await _handle_ping(ctx)
+    elif command == "/status":
+        return await _handle_status(ctx)
     else:
         return None
 
@@ -84,3 +86,22 @@ async def _handle_test(ctx: RouterContext) -> str:
 async def _handle_ping(ctx: RouterContext) -> str:
     """Simple ping response."""
     return "🏓 Pong! Il bot è online."
+
+
+async def _handle_status(ctx: RouterContext) -> str:
+    """Show system status and uptime info."""
+    now = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
+    num_commands = len(COMMAND_REGISTRY)
+    builtin = sum(1 for c in COMMAND_REGISTRY.values() if c.get("handler_type") == "builtin")
+    satellite = num_commands - builtin
+    
+    return (
+        f"📊 <b>Stato del Sistema</b>\n\n"
+        f"🟢 <b>Stato:</b> Operativo\n"
+        f"⏰ <b>Orario:</b> {now}\n"
+        f"🤖 <b>Comandi registrati:</b> {num_commands}\n"
+        f"   • Interni: {builtin}\n"
+        f"   • Esterni: {satellite}\n\n"
+        f"💡 Usa /help per la lista comandi"
+    )
+
