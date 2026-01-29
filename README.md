@@ -185,8 +185,52 @@ Il progetto è ottimizzato per rimanere nei limiti gratuiti:
 | Servizio | Limite Free | Nostro Uso |
 |----------|-------------|------------|
 | Cloud Run | 2M req/mese | ✅ Basso |
-| Cloud Build | 120 min/giorno | ✅ Occasionale |
+| Cloud Build | 120 min/giorno | ⚠️ Attenzione |
 | Secret Manager | 6 versioni | ✅ 2-3 secrets |
+
+### ⚠️ ATTENZIONE: Cloud Build - 120 minuti/giorno
+
+Con CI/CD attivo, **ogni push su `main` consuma minuti di build**. Un build tipico dura ~3-5 minuti.
+
+**Best Practices per non esaurire i minuti:**
+
+1. **NON pushare direttamente su `main`** per ogni piccola modifica
+2. **Usa branch di sviluppo** (`dev`, `feature/xxx`) per il lavoro quotidiano
+3. **Fai merge su `main` solo quando pronto** per il deploy
+4. **Raggruppa le modifiche** in commit significativi prima del merge
+
+**Workflow consigliato:**
+
+```bash
+# Sviluppo quotidiano (NO build trigger)
+git checkout -b feature/nuova-funzione
+git commit -m "WIP: lavoro in corso"
+git push origin feature/nuova-funzione
+
+# Quando pronto per deploy (TRIGGERA build)
+git checkout main
+git merge feature/nuova-funzione
+git push origin main  # ← Questo consuma minuti!
+```
+
+**Calcolo rapido:**
+
+- 120 min/giorno ÷ 4 min/build = ~30 deploy massimi al giorno
+- In pratica, 2-3 deploy al giorno sono più che sufficienti
+
+## 🚀 CI/CD con Cloud Build
+
+Il progetto è configurato per il **deploy automatico** tramite GitHub:
+
+- **Trigger**: Push su branch `main`
+- **File config**: `cloudbuild.yaml`
+- **Processo**: Build Docker → Push GCR → Deploy Cloud Run
+
+Per deploy manuali (senza consumare minuti CI/CD):
+
+```powershell
+.\scripts\deploy.ps1
+```
 
 ## 📚 Documentazione
 
