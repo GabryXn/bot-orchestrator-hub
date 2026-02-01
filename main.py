@@ -11,41 +11,79 @@ Endpoints:
     GET  /                  - Basic info endpoint
 """
 
-import os
-import logging
-from typing import Dict, Any
-from contextlib import asynccontextmanager
+from __future__ import annotations
 
-from fastapi import FastAPI, BackgroundTasks, Request, HTTPException, Header
-from fastapi.responses import JSONResponse
+import logging
+import sys
+from contextlib import asynccontextmanager
+from typing import Any
+
+import structlog
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from pydantic import ValidationError
 
 from config import (
-    TELEGRAM_TOKEN, 
-    ORCHESTRATOR_SECRET, 
-    validate_config,
     LOG_LEVEL,
+    ORCHESTRATOR_SECRET,
+    TELEGRAM_TOKEN,
+    validate_config,
 )
 from models import (
-    TelegramUpdate, 
-    ProactiveMessageRequest, 
-    ProactiveMessageResponse,
     EditMessageRequest,
     ParseMode,
+    ProactiveMessageRequest,
+    ProactiveMessageResponse,
+    TelegramUpdate,
 )
 from router import parse_telegram_update, route_message
 from telegram_client import telegram_client
 
 
 # =============================================================================
-# LOGGING CONFIGURATION
+# STRUCTURED LOGGING CONFIGURATION
 # =============================================================================
 
-logging.basicConfig(
-    level=getattr(logging, LOG_LEVEL, logging.INFO),
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-)
-logger = logging.getLogger(__name__)
+def configure_logging() -> None:
+    """Configure structlog for JSON structured logging."""
+    # Determine if we're in production (Cloud Run sets this)
+    is_production = "K_SERVICE" in __import__("os").environ
+
+    # Configure processors
+    shared_processors: list[structlog.types.Processor] = [
+        structlog.contextvars.merge_contextvars,
+        structlog.stdlib.add_log_level,
+        structlog.stdlib.add_logger_name,
+        structlog.stdlib.PositionalArgumentsFormatter(),
+        structlog.processors.TimeStamper(fmt="iso"),
+        structlog.processors.StackInfoRenderer(),
+        structlog.processors.UnicodeDecoder(),
+    ]
+
+    if is_production:
+        # JSON output for Cloud Run logs
+        shared_processors.append(structlog.processors.JSONRenderer())
+    else:
+        # Pretty console output for development
+        shared_processors.append(structlog.dev.ConsoleRenderer(colors=True))
+
+    structlog.configure(
+        processors=shared_processors,
+        wrapper_class=structlog.stdlib.BoundLogger,
+        context_class=dict,
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        cache_logger_on_first_use=True,
+    )
+
+    # Also configure stdlib logging to use structlog
+    logging.basicConfig(
+        format="%(message)s",
+        stream=sys.stdout,
+        level=getattr(logging, LOG_LEVEL, logging.INFO),
+    )
+
+
+configure_logging()
+logger = structlog.get_logger(__name__)
 
 
 # =============================================================================
@@ -79,6 +117,8 @@ async def lifespan(app: FastAPI):
     
     # Shutdown
     logger.info("👋 Bot Orchestrator Hub shutting down...")
+    await telegram_client.close()
+    logger.info("✅ Cleanup complete")
 
 
 # =============================================================================

@@ -17,7 +17,7 @@ Bot Orchestrator Hub è la **spina dorsale** per tutti i tuoi bot e automazioni.
 ## 🤖 Comandi Attivi
 
 | Comando | Descrizione | Tipo |
-|---------|-------------|------|
+| :--- | :--- | :--- |
 | `/start` | Messaggio di benvenuto | 🔧 Built-in |
 | `/help` | Lista comandi | 🔧 Built-in |
 | `/test` | Debug e info chat | 🔧 Built-in |
@@ -35,16 +35,13 @@ Cloud Bot Controller/
 ├── models.py               # Schemi Pydantic
 ├── router.py               # Logica di routing messaggi
 ├── telegram_client.py      # Client API Telegram
-├── handlers/
-│   ├── commands.py         # Handler comandi built-in
-│   └── satellites.py       # Dispatcher script esterni
-├── scripts/
-│   ├── setup_project.ps1   # Setup iniziale GCP
-│   └── deploy.ps1          # Deploy rapido
-├── docs/
-│   ├── EXTENDING.md        # Guida estensione
-│   └── PROTOCOL.md         # Specifiche protocollo
-├── Dockerfile
+├── handlers/               # Gestori comandi
+├── scripts/                # Script di utility e deploy
+├── tests/                  # Unit tests (pytest)
+├── docs/                   # Documentazione
+├── Dockerfile              # Configurazione Docker (Multi-stage)
+├── cloudbuild.yaml         # Configurazione CI/CD GCR
+├── pyproject.toml          # Tooling Python (ruff, mypy, pytest)
 └── requirements.txt
 ```
 
@@ -234,6 +231,7 @@ Per deploy manuali (senza consumare minuti CI/CD):
 
 ## 📚 Documentazione
 
+- [API_REFERENCE.md](docs/API_REFERENCE.md) - Riferimento API completo (Nuovo!)
 - [EXTENDING.md](docs/EXTENDING.md) - Come aggiungere comandi
 - [PROTOCOL.md](docs/PROTOCOL.md) - Specifiche protocollo
 
