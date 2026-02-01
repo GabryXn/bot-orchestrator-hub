@@ -1,0 +1,63 @@
+# =============================================================================
+# Docker Build Context Exclusions
+# =============================================================================
+
+# Git
+.git
+.gitignore
+.github
+
+# IDE and editors
+.vscode
+.idea
+*.swp
+*.swo
+
+# Python cache
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+env/
+ENV/
+GCP_Shared_Env/
+
+# Environment files (secrets)
+.env
+.env.*
+*.env
+
+# Testing
+tests/
+*.test.py
+test_*.py
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Documentation (not needed in container)
+docs/
+*.md
+!README.md
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Local scripts
+scripts/
+
+# Logs
+*.log
+
+# Temp files
+*.tmp
+*.temp
+
+# Agent skills (dev only)
+.agent/

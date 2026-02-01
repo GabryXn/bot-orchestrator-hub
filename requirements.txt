@@ -1,7 +1,20 @@
+# =============================================================================
+# PRODUCTION DEPENDENCIES
+# =============================================================================
+
 # Core Web Framework
 fastapi>=0.109.0,<0.120.0
-uvicorn[standard]>=0.27.0,<0.30.0
+uvicorn[standard]>=0.27.0,<0.35.0
 pydantic>=2.6.0,<3.0.0
+pydantic-settings>=2.1.0,<3.0.0
 
-# HTTP Client (Async)
+# HTTP Client (Async with connection pooling)
 httpx>=0.26.0,<0.28.0
+
+# Structured Logging
+structlog>=24.1.0,<25.0.0
+
+# =============================================================================
+# DEVELOPMENT DEPENDENCIES (install with: pip install -r requirements-dev.txt)
+# =============================================================================
+# See requirements-dev.txt for testing and development tools

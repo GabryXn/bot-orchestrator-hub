@@ -51,16 +51,39 @@ async def _handle_start(ctx: RouterContext) -> str:
 
 
 async def _handle_help(ctx: RouterContext) -> str:
-    """List all available commands."""
-    lines = ["📋 <b>Comandi disponibili:</b>\n"]
+    """List all available commands grouped by category."""
+    lines = ["📋 <b>Comandi disponibili:</b>"]
+    
+    # Group commands by category
+    categories: dict[str, list[str]] = {}
     
     for cmd, config in COMMAND_REGISTRY.items():
+        category = config.get("category", "Altro")
+        if category not in categories:
+            categories[category] = []
+            
         description = config.get("description", "Nessuna descrizione")
         handler_type = config.get("handler_type", "unknown")
         type_emoji = "🔧" if handler_type == "builtin" else "🔗"
-        lines.append(f"{type_emoji} {cmd} - {description}")
+        
+        categories[category].append(f"{type_emoji} {cmd} - {description}")
     
-    lines.append("\n💡 <i>Legenda: 🔧 = comando interno, 🔗 = script esterno</i>")
+    # Order: Base, Scripts, Admin, others
+    priority_order = ["Comandi di Base", "Script Spese", "Admin & Debug"]
+    
+    # Print priority categories first
+    for cat in priority_order:
+        if cat in categories:
+            lines.append(f"\n🔹 <b>{cat}</b>")
+            lines.extend(categories[cat])
+            del categories[cat]
+            
+    # Print remaining categories
+    for cat, cmds in categories.items():
+        lines.append(f"\n🔹 <b>{cat}</b>")
+        lines.extend(cmds)
+    
+    lines.append("\n💡 <i>Legenda: 🔧 = built-in, 🔗 = esterno</i>")
     
     return "\n".join(lines)
 
