@@ -16,7 +16,7 @@ from __future__ import annotations
 import logging
 import sys
 from contextlib import asynccontextmanager
-from typing import Any
+from typing import Any, Dict
 
 import structlog
 from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
