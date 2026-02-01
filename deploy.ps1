@@ -6,34 +6,34 @@
 # ============================================================================
 
 param(
-    [Parameter(Position = 0)]
+    [Parameter(Position=0)]
     [string]$CommitMessage
 )
 
 # Colors for output
-function Write-Status { param($msg) Write-Host "🔄 $msg" -ForegroundColor Cyan }
-function Write-Success { param($msg) Write-Host "✅ $msg" -ForegroundColor Green }
-function Write-Error { param($msg) Write-Host "❌ $msg" -ForegroundColor Red }
-function Write-Info { param($msg) Write-Host "📋 $msg" -ForegroundColor Yellow }
+function Write-Status { param($msg) Write-Host "[...] $msg" -ForegroundColor Cyan }
+function Write-Success { param($msg) Write-Host "[OK] $msg" -ForegroundColor Green }
+function Write-Err { param($msg) Write-Host "[ERR] $msg" -ForegroundColor Red }
+function Write-Info { param($msg) Write-Host "[i] $msg" -ForegroundColor Yellow }
 
 # Header
 Write-Host ""
-Write-Host "╔══════════════════════════════════════════════════════════════╗" -ForegroundColor Magenta
-Write-Host "║     🚀 CLOUD BOT CONTROLLER - AUTO DEPLOY                   ║" -ForegroundColor Magenta
-Write-Host "╚══════════════════════════════════════════════════════════════╝" -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
+Write-Host "   CLOUD BOT CONTROLLER - AUTO DEPLOY  " -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
 Write-Host ""
 
 # Check if we're in a git repo
 if (-not (Test-Path ".git")) {
-    Write-Error "Not a git repository! Run from project root."
+    Write-Err "Not a git repository! Run from project root."
     exit 1
 }
 
 # Get commit message if not provided
 if (-not $CommitMessage) {
-    $CommitMessage = Read-Host "📝 Enter commit message"
+    $CommitMessage = Read-Host "Enter commit message"
     if (-not $CommitMessage) {
-        Write-Error "Commit message is required!"
+        Write-Err "Commit message is required!"
         exit 1
     }
 }
@@ -49,13 +49,12 @@ if (-not $status) {
         exit 0
     }
     Write-Info "Found $ahead unpushed commit(s). Pushing..."
-}
-else {
+} else {
     # Step 2: Stage all changes
     Write-Status "Staging all changes..."
     git add -A
     if ($LASTEXITCODE -ne 0) {
-        Write-Error "Failed to stage changes!"
+        Write-Err "Failed to stage changes!"
         exit 1
     }
     Write-Success "Changes staged"
@@ -69,7 +68,7 @@ else {
     Write-Status "Committing with message: '$CommitMessage'"
     git commit -m $CommitMessage
     if ($LASTEXITCODE -ne 0) {
-        Write-Error "Failed to commit!"
+        Write-Err "Failed to commit!"
         exit 1
     }
     Write-Success "Committed successfully"
@@ -79,19 +78,19 @@ else {
 Write-Status "Pushing to GitHub (origin/main)..."
 git push origin main
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Failed to push to GitHub!"
+    Write-Err "Failed to push to GitHub!"
     exit 1
 }
 Write-Success "Pushed to GitHub"
 
 # Step 5: Cloud Build status
 Write-Host ""
-Write-Host "═══════════════════════════════════════════════════════════════" -ForegroundColor Magenta
+Write-Host "========================================" -ForegroundColor Magenta
 Write-Success "Push complete! Cloud Build will now automatically:"
 Write-Host ""
-Write-Host "   1. 📦 Build Docker image" -ForegroundColor White
-Write-Host "   2. 🧪 Run tests" -ForegroundColor White
-Write-Host "   3. 🚀 Deploy to Cloud Run" -ForegroundColor White
+Write-Host "   1. Build Docker image" -ForegroundColor White
+Write-Host "   2. Run tests" -ForegroundColor White
+Write-Host "   3. Deploy to Cloud Run" -ForegroundColor White
 Write-Host ""
 Write-Info "Monitor build at: https://console.cloud.google.com/cloud-build/builds"
 Write-Host ""
@@ -103,5 +102,5 @@ if ($openConsole -eq "y" -or $openConsole -eq "Y") {
 }
 
 Write-Host ""
-Write-Success "Deploy initiated! 🎉"
+Write-Success "Deploy initiated!"
 Write-Host ""
