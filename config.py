@@ -45,6 +45,15 @@ class Settings(BaseSettings):
         description="Shared secret for authenticating satellite scripts",
     )
 
+    @field_validator("telegram_token", "orchestrator_secret", mode="before")
+    @classmethod
+    def strip_whitespace(cls, v: str) -> str:
+        """Remove whitespace and invisible characters from secrets."""
+        if isinstance(v, str):
+            # Strip all whitespace including \r, \n, spaces, tabs
+            return v.strip()
+        return v
+
     # -------------------------------------------------------------------------
     # Project Metadata
     # -------------------------------------------------------------------------
