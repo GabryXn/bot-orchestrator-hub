@@ -13,8 +13,8 @@ from typing import Optional, Dict, Any, Union
 
 import httpx
 
-from config import TELEGRAM_API_BASE, TELEGRAM_TOKEN
-from models import ParseMode
+from src.core.config import TELEGRAM_API_BASE, TELEGRAM_TOKEN
+from src.bot.models import ParseMode
 
 logger = logging.getLogger(__name__)
 
