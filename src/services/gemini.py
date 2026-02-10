@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 class VertexAIService:
     """Service for interacting with Vertex AI Gemini models."""
 
-    def __init__(self, location: str = "europe-west1", model_name: str = "gemini-1.5-flash-001"):
+    def __init__(self, location: str = "europe-west1", model_name: str = "gemini-2.0-flash"):
         self.location = location
         self.model_name = model_name
         self._initialized = False
