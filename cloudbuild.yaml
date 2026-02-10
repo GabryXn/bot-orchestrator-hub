@@ -61,7 +61,7 @@ timeout: '600s'
 # Substitutions (can be overridden)
 substitutions:
   _REGION: 'europe-west8'
-  _IMAGE_TAG: '${COMMIT_SHA:-latest}'
+  _IMAGE_TAG: 'latest'
 
 # Build options
 options:
