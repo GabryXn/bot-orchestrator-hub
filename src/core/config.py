@@ -58,7 +58,7 @@ class Settings(BaseSettings):
     # Project Metadata
     # -------------------------------------------------------------------------
     gcp_project_id: str = Field(
-        default="bot-orchestrator-hub",
+        default="script-spese-449319",
         description="Google Cloud Project ID",
     )
     service_name: str = Field(
