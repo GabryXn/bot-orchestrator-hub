@@ -1,119 +1,189 @@
-# Bot Orchestrator Hub 🚀
+<div align="center">
 
-> **Version 2.0.0 (Hub-and-Spoke Architecture)**
-> Un orchestratore centralizzato, modulare e ad alte prestazioni per bot e automazioni basato su Google Cloud.
+# 🤖 Bot Orchestrator Hub
 
----
+### The Enterprise-Grade Serverless Controller
 
-## 🏛️ Architettura Hub-and-Spoke 2.0
+[![Python](https://img.shields.io/badge/Python-3.12%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109%2B-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Google Cloud Run](https://img.shields.io/badge/Google_Cloud-Run-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/run)
+[![Docker](https://img.shields.io/badge/Docker-Multi--Stage-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
+[![License](https://img.shields.io/badge/License-Private-red?style=for-the-badge)](https://choosealicense.com/no-permission/)
+[![Region](https://img.shields.io/badge/Region-Milan_(eur--west8)-green?style=for-the-badge&logo=google-earth&logoColor=white)](https://cloud.google.com/about/locations)
 
-Il progetto ha adottato una filosofia **Hub-and-Spoke** per garantire scalabilità infinita e una gestione pulita dei permessi.
-
-### 1. Il Hub (Controller)
-
-**Progetto GCP:** `bot-orchestrator-hub`
-È la "torre di controllo" centrale. Gestisce i webhook di Telegram, ruota i comandi verso gli script satelliti e fornisce API standardizzate per inviare messaggi proattivi.
-
-### 2. Il Spoke (AI & Vision Services)
-
-**Progetto GCP:** `personal-vision-services` (Nickname: **"Personal Services"**)
-Centralizza tutte le risorse AI (Vertex AI, Vision API). Agisce come fornitore di servizi per il Hub, mantenendo i costi e le quote in un unico punto monitorato.
+*Un orchestratore centralizzato e scalabile per la gestione di bot multi-piattaforma.*
+</div>
 
 ---
 
-## 🌍 Deployment a Milano (europe-west8)
+## 📑 Table of Contents
 
-Tutta l'infrastruttura è stata migrata nella regione di **Milano (europe-west8)**.
-
-### Perché Milano?
-
-- **Latenza Minima**: Risposte ultra-veloci per utenti situati in Italia (Firenze).
-- **Compliance**: I dati rimangono geograficamente vicini.
-- **Performance**: Accesso diretto ai nodi Vertex AI europei.
+- [🏛️ Filosofia e Architettura](#-filosofia-e-architettura)
+- [🌍 Regione Milano](#-la-scelta-della-regione-milano-europe-west8)
+- [🚀 Deployment & CI/CD](#-deployment--cicd-strategy)
+- [🛠️ Guida allo Sviluppo](#-guida-allo-sviluppo-ed-estensione)
+- [📡 Protocollo](#-protocollo-di-comunicazione)
+- [🔐 Sicurezza](#-sicurezza-e-gestione-errori)
 
 ---
 
-## 🚀 Deployment & CI/CD
+## 🏛️ Filosofia e Architettura
 
-Il sistema supporta due flussi di deployment armonizzati:
+Questo progetto non è un semplice "Telegram Bot", ma un **Hub di Orchestrazione Serverless** progettato per gestire un ecosistema complesso di script e servizi in modo scalabile, sicuro ed economico.
 
-### 1. Automated (GitHub CI/CD)
+### Il Modello "Hub-and-Spoke 2.0"
 
-Ogni push sul branch `main` attiva automaticamente **Google Cloud Build**.
+Abbiamo adottato un'architettura a **raggiera** (Hub-and-Spoke) per separare le responsabilità e garantire la manutenibilità a lungo termine.
 
-- **Processo**: Build Docker → Push su Container Registry → Deploy su Cloud Run.
-- **Tagging**: Le immagini vengono taggate automaticamente con lo `SHA` del commit GitHub per una tracciabilità totale.
+1. **Il Hub (Controller)**: `bot-orchestrator-hub`
+    - **Ruolo**: Centrale operativa. Riceve tutti i messaggi dagli utenti (Telegram, Discord, Slack), gestisce l'autenticazione, il routing e lo stato delle conversazioni.
+    - **Tecnologia**: Python 3.12, FastAPI, Uvicorn, Docker (Multi-stage).
+    - **Hosting**: Google Cloud Run (Serverless Container).
+2. **I Spokes (Satelliti)**: Ecosistema di Script
+    - **Ruolo**: Eseguono la logica di business specifica (es. "Script Spese", "Generatore Report", "Gestione Palestra"). Possono essere Google Apps Script, Cloud Functions o altri container.
+    - **Comunicazione**: Via HTTP(S) asincrono. Il Hub invia un payload JSON standardizzato e il satellite risponde con l'esito.
+3. **Il Core AI (Servizi Condivisi)**: `personal-vision-services`
+    - **Ruolo**: Fornitore centralizzato di intelligenza. Gestisce le chiamate a Vertex AI (Gemini 1.5 Flash) e Cloud Vision (OCR).
+    - **Vantaggio**: Unico punto di fatturazione e gestione quote per tutti i progetti.
 
-### 2. Manual (Developer CLI)
+### 🌍 La Scelta della Regione: Milano (europe-west8)
 
-Per aggiornamenti rapidi o test senza passare da GitHub:
+Tutta l'infrastruttura è stata migrata nella regione `europe-west8` (Milano).
+
+- **Latenza Minima**: Risposte ultra-veloci (pochi millisecondi) per interagire con i server di messaggistica e gli utenti in Italia.
+- **Compliance GDPR**: I dati sensibili processati (es. scontrini, spese) non lasciano mai l'Europa.
+- **Performance AI**: Accesso diretto ai nodi regionali di Vertex AI per inferenza rapida.
+
+---
+
+## 🚀 Deployment & CI/CD Strategy
+
+### 1. Automated Deployment (GitHub Flow)
+
+Il progetto utilizza **Google Cloud Build** integrato nativamente con GitHub.
+
+- **Trigger**: Push sul branch `main`.
+- **Workflow**:
+    1. **Build**: Creazione dell'immagine Docker ottimizzata.
+    2. **Test**: Esecuzione suite di test (opzionale).
+    3. **Deploy**: Aggiornamento del servizio Cloud Run a Milano.
+- **Versionamento**: Ogni immagine viene taggata automaticamente con il **Commit SHA** di GitHub, garantendo tracciabilità totale e rollback immediato.
+
+### 2. Manual Deployment (Developer CLI)
+
+Per iterazioni rapide o fix di emergenza senza passare da git:
 
 ```powershell
 .\scripts\deploy.ps1
 ```
 
-Il deploy manuale utilizza il tag `:latest` come fallback sicuro.
+Questo script esegue la build e il deploy direttamente dalla tua macchina, utilizzando il tag `:latest` come fallback.
+
+### ☸️ Architettura Docker Scalabile
+
+L'immagine Docker è costruita con una strategia **Multi-Stage Build** per minimizzare la dimensione e massimizzare la sicurezza:
+
+- **Stage 1 (Builder)**: Immagine completa con compilatori e tool di build. Qui vengono installate le dipendenze Python.
+- **Stage 2 (Runtime)**: Immagine `python:3.12-slim` minimale (~50MB). Copia solo le librerie compilate e il codice sorgente.
+- **Risultato**: Avvio istantaneo (Cold Start < 2s) e superficie di attacco ridotta.
 
 ---
 
-## 🛠️ Docker & Scalabilità
+## 🛠️ Guida allo Sviluppo ed Estensione
 
-L'architettura utilizza un **Dockerfile multi-stage** ottimizzato:
+Il sistema è progettato per essere esteso senza riscrivere il core.
 
-- **Build Stage**: Installa le dipendenze e prepara l'ambiente.
-- **Runtime Stage**: Immagine Python "slim" estremamente leggera (~30MB di base).
-- **Auto-Scaling**: Cloud Run gestisce istanze da 0 a 10 in base al traffico, garantendo **costi zero** quando il bot è inattivo.
+### Aggiungere Nuovi Comandi
 
----
+Tutta la configurazione risiede in `src/core/config.py`. Puoi definire due tipi di comandi:
 
-## 🤖 Sistema dei Comandi
+#### A. Comandi "Built-in" (Logica Interna)
 
-L'orchestratore distingue tra due tipi di comandi in `src/core/config.py`:
+Eseguiti direttamente dal controller Python (es. `/start`, `/status`).
 
-| Tipo | Descrizione | Case Study |
-| :--- | :--- | :--- |
-| **Built-in** | Logica eseguita direttamente nel server Python. | `/start`, `/status`, `/ping` |
-| **Satellite** | Richiesta inoltrata a un server esterno (es. Apps Script). | `/report`, `/sheet` (Script Spese) |
+1. Aggiungi la voce in `COMMAND_REGISTRY`.
+2. Implementa la funzione in `src/bot/handlers/`.
 
-### Formato per Aggiungere Nuovi Satelliti
+#### B. Comandi "Satellite" (Script Esterni)
 
-Per collegare un nuovo script (es. un bot Discord o un'automazione Office), aggiungi al `COMMAND_REGISTRY`:
+Inoltrati a un servizio esterno (es. Google Apps Script).
 
 ```python
-"/nuovo_comando": {
-    "description": "Cosa fa lo script",
+"/report": {
+    "description": "Genera report spese",
     "handler_type": "satellite",
-    "target_url": "URL_SATELLITE",
-    "action_name": "nome_azione"
+    "target_url": "https://script.google.com/macros/s/.../exec",
+    "action_name": "generate_report"
+}
+```
+
+L'orchestrator si occupa automaticamente di:
+
+- Verificare l'autenticazione.
+- Costruire il payload JSON standard.
+- Gestire timeout ed errori di rete.
+- Inoltrare la risposta del satellite all'utente.
+
+---
+
+## 📡 Protocollo di Comunicazione
+
+L'interazione tra Hub e Satelliti avviene tramite un protocollo JSON rigoroso per garantire stabilità.
+
+**Request (Hub -> Satellite):**
+
+```json
+{
+  "auth_key": "SHARED_SECRET_FROM_SECRET_MANAGER",
+  "action": "generate_report",
+  "source": "telegram",
+  "params": {
+    "chat_id": 123456789,
+    "user_id": 987654321,
+    "text": "/report mensile",
+    "timestamp": "2026-02-10T20:00:00Z"
+  }
+}
+```
+
+**Response (Satellite -> Hub):**
+
+```json
+{
+  "success": true,
+  "reply_message": "Ecco il tuo report: ...",
+  "data": { "processed_rows": 50 }
 }
 ```
 
 ---
 
-## 📁 Struttura del Progetto
+## 🔐 Sicurezza e Gestione Errori
 
-```text
-Cloud Bot Controller/
-├── src/
-│   ├── api/            # Router FastAPI (Webhook & Services)
-│   ├── bot/            # Client Telegram e logica messaggistica
-│   ├── services/       # Proxy AI (Gemini, Vision)
-│   └── core/           # Configurazione e modelli Pydantic
-├── Dockerfile          # Immagine multi-stage
-├── cloudbuild.yaml     # Workflow CI/CD Centralizzato
-└── README.md
-```
+### Secret Management
 
----
+Nessuna credenziale è salvata nel codice.
 
-## 🔐 Gestione Errori & Sicurezza
+- **Source**: Google Secret Manager (`telegram-bot-token`, `orchestrator-secret`).
+- **Runtime**: Montati come variabili d'ambiente o volumi in Cloud Run.
 
-- **Secret Manager**: Tutte le chiavi (`TELEGRAM_TOKEN`, `ORCHESTRATOR_SECRET`) sono montate come file system in Cloud Run.
-- **Resilienza**: Il sistema gestisce automaticamente i timeout degli script satelliti (60s) e risponde con messaggi di errore formattati all'utente.
-- **Log Centralizzati**: Tutti gli errori vengono tracciati su **Cloud Logging** per un debug immediato.
+### Gestione Errori
+
+Il sistema è resiliente ai fallimenti:
+
+- **Timeout Satelliti**: Se uno script esterno non risponde entro 60s, il Hub termina la connessione e avvisa l'utente, prevenendo il blocco del bot.
+- **Logging Strutturato**: Ogni errore, dal parsing del JSON alle eccezioni Python, viene loggato su **Cloud Logging** con severity appropriata per un debug immediato.
 
 ---
 
-## 📝 Licenza
+## 📝 Comandi Utili (Cheatsheet)
 
-Uso privato e professionale.
+| Azione | Comando |
+| :--- | :--- |
+| **Deploy Manuale** | `.\scripts\deploy.ps1` |
+| **Vedi Log Live** | `gcloud beta run services logs tail bot-orchestrator --project bot-orchestrator-hub --region europe-west8` |
+| **Check Stato** | `/status` (in chat Telegram) |
+| **Test Locale** | `uvicorn src.main:app --reload` |
+
+---
+*Documentazione generata automaticamente dall'Assistente Virtuale - Febbraio 2026*
