@@ -8,6 +8,8 @@ from typing import Optional, List
 from google.cloud import vision
 from google.cloud.vision import AnnotateImageResponse
 
+from src.core.config import PROJECT_ID
+
 logger = logging.getLogger(__name__)
 
 class VisionService:
@@ -20,7 +22,10 @@ class VisionService:
     def client(self) -> vision.ImageAnnotatorClient:
         """Lazy load the Vision client."""
         if not self._client:
-            self._client = vision.ImageAnnotatorClient()
+            # Use the centralized project ID for billing and permissions
+            self._client = vision.ImageAnnotatorClient(
+                client_options={"api_endpoint": "eu-vision.googleapis.com"} if PROJECT_ID else None
+            )
         return self._client
 
     def ocr_image(self, content: bytes, mime_type: str = "image/jpeg") -> str:
