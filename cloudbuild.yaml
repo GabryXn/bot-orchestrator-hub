@@ -60,7 +60,7 @@ timeout: '600s'
 
 # Substitutions (can be overridden)
 substitutions:
-  _REGION: 'europe-west1'
+  _REGION: 'europe-west8'
 
 # Build options
 options:
