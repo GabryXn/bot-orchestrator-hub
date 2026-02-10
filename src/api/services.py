@@ -25,12 +25,12 @@ _vision_service = VisionService()
 # MODELS
 # =============================================================================
 
-class GeminiUnknownRequest(BaseModel):
+class GeminiAnalyzeRequest(BaseModel):
     auth_key: str
-    prompt: str
+    user_text: str
     system_instruction: Optional[str] = None
     temperature: float = 0.2
-    response_mime_type: Optional[str] = None
+    response_mime_type: Optional[str] = "application/json"
 
 class GeminiResponse(BaseModel):
     success: bool
@@ -39,7 +39,7 @@ class GeminiResponse(BaseModel):
 
 class VisionRequest(BaseModel):
     auth_key: str
-    content_base64: str
+    image_base64: str
     mime_type: str = "image/jpeg"
 
 class VisionResponse(BaseModel):
@@ -51,17 +51,17 @@ class VisionResponse(BaseModel):
 # ENDPOINTS
 # =============================================================================
 
-@router.post("/gemini/generate", response_model=GeminiResponse)
-async def gemini_generate(request: GeminiUnknownRequest):
+@router.post("/gemini/analyze", response_model=GeminiResponse)
+async def gemini_analyze(request: GeminiAnalyzeRequest):
     """
-    Generate content using Vertex AI Gemini.
+    Analyze content using Vertex AI Gemini.
     """
     if request.auth_key != ORCHESTRATOR_SECRET:
         raise HTTPException(status_code=401, detail="Invalid auth_key")
 
     try:
         content = await _gemini_service.generate_content(
-            prompt=request.prompt,
+            prompt=request.user_text,
             system_instruction=request.system_instruction,
             temperature=request.temperature,
             response_mime_type=request.response_mime_type,
@@ -83,7 +83,7 @@ async def vision_ocr(request: VisionRequest):
     try:
         # Decode base64
         try:
-            content_bytes = base64.b64decode(request.content_base64)
+            content_bytes = base64.b64decode(request.image_base64)
         except Exception:
              return VisionResponse(success=False, error="Invalid base64 content")
 
