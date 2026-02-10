@@ -6,11 +6,11 @@ Routes incoming messages to the appropriate handlers.
 import logging
 from typing import Optional
 
-from models import RouterContext, TelegramUpdate, Platform
-from config import COMMAND_REGISTRY
-from handlers.commands import handle_builtin_command
-from handlers.satellites import dispatch_to_satellite
-from telegram_client import telegram_client
+from src.bot.models import RouterContext, TelegramUpdate, Platform
+from src.core.config import COMMAND_REGISTRY
+from src.bot.handlers.commands import handle_builtin_command
+from src.bot.handlers.satellites import dispatch_to_satellite
+from src.bot.client import telegram_client
 
 logger = logging.getLogger(__name__)
 

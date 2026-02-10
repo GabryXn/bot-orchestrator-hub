@@ -8,8 +8,8 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 import httpx
 
-from models import RouterContext, SatelliteRequest, SatelliteRequestParams, SatelliteResponse
-from config import ORCHESTRATOR_SECRET
+from src.bot.models import RouterContext, SatelliteRequest, SatelliteRequestParams, SatelliteResponse
+from src.core.config import ORCHESTRATOR_SECRET
 
 logger = logging.getLogger(__name__)
 

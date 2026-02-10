@@ -128,7 +128,7 @@ TELEGRAM_API_BASE: str = _settings.telegram_api_base
 # Central registry for all bot commands.
 # To add a new command:
 #   1. Add an entry to COMMAND_REGISTRY below
-#   2. If handler_type is "builtin", implement the handler in handlers/commands.py
+#   2. If handler_type is "builtin", implement the handler in src/bot/handlers/commands.py
 #   3. If handler_type is "satellite", provide the target_url and action_name
 #
 
@@ -174,6 +174,13 @@ COMMAND_REGISTRY: dict[str, dict[str, Any]] = {
         "category": "Script Spese",
         "target_url": "https://script.google.com/macros/s/REDACTED_SCRIPT_ID/exec",
         "action_name": "process_gym_receipts",
+    },
+    "/spesefamiglia": {
+        "description": "Genera report spese famiglia 👨‍👩‍👧",
+        "handler_type": "satellite",
+        "category": "Spese Famiglia",
+        "target_url": "https://script.google.com/macros/s/REDACTED_SCRIPT_ID/exec",
+        "action_name": "process_family_expenses",
     },
 }
 

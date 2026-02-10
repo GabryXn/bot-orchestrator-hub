@@ -7,9 +7,8 @@ import logging
 from datetime import datetime
 from typing import Optional
 
-from models import RouterContext
-from config import COMMAND_REGISTRY
-from telegram_client import telegram_client
+from src.bot.models import RouterContext
+from src.core.config import COMMAND_REGISTRY
 
 logger = logging.getLogger(__name__)
 
@@ -127,4 +126,3 @@ async def _handle_status(ctx: RouterContext) -> str:
         f"   • Esterni: {satellite}\n\n"
         f"💡 Usa /help per la lista comandi"
     )
-

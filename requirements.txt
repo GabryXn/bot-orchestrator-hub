@@ -12,7 +12,12 @@ pydantic-settings>=2.1.0,<3.0.0
 httpx>=0.26.0,<0.28.0
 
 # Structured Logging
+# Structured Logging
 structlog>=24.1.0,<25.0.0
+
+# Google Cloud Services
+google-cloud-aiplatform>=1.38.0
+google-cloud-vision>=3.4.0
 
 # =============================================================================
 # DEVELOPMENT DEPENDENCIES (install with: pip install -r requirements-dev.txt)
