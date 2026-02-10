@@ -58,7 +58,7 @@ class Settings(BaseSettings):
     # Project Metadata
     # -------------------------------------------------------------------------
     gcp_project_id: str = Field(
-        default="script-spese-449319",
+        default="personal-vision-services",
         description="Google Cloud Project ID",
     )
     service_name: str = Field(
