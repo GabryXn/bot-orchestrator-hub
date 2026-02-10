@@ -4,8 +4,8 @@
 
 The Cloud Bot Controller provides a centralized API for managing multi-platform bot messaging. This API allows external scripts (satellites) to send and edit messages through the orchestrated bot.
 
-**Base URL:** `https://[YOUR-CLOUD-RUN-URL]`
-**Version:** 1.0.0
+**Base URL:** `https://bot-orchestrator-tuoxploj4q-oc.a.run.app` (Milan Region)
+**Version:** 2.0.0
 
 ---
 
@@ -129,7 +129,7 @@ Verifies service status. Used by Cloud Run and monitoring tools.
 
 ```javascript
 function sendTelegramNotification(text) {
-  const url = "https://your-service-url.run.app/api/send";
+  const url = "https://bot-orchestrator-tuoxploj4q-oc.a.run.app/api/send";
   const payload = {
     auth_key: PropertiesService.getScriptProperties().getProperty("ORCHESTRATOR_SECRET"),
     platform: "telegram",
@@ -161,7 +161,7 @@ function sendTelegramNotification(text) {
 import requests
 
 def send_notification(text):
-    url = "https://your-service-url.run.app/api/send"
+    url = "https://bot-orchestrator-tuoxploj4q-oc.a.run.app/api/send"
     data = {
         "auth_key": "YOUR_SECRET_KEY",
         "platform": "telegram",

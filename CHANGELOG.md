@@ -1,5 +1,26 @@
 # Changelog
 
+## [2.0.0] - 2026-02-10
+
+### Major Changes (Hub-and-Spoke 2.0)
+
+- **Milan Relocation**: Migrated entire infrastructure (Cloud Run, Vertex AI) to **`europe-west8` (Milan)** for ultra-low latency.
+- **Project Governance**: Switched to a **Hub-and-Spoke** architecture.
+  - Hub: `bot-orchestrator-hub` (Controller)
+  - Spoke (AI): `YOUR_GCP_PROJECT_ID` (Centralized AI provider)
+- **CI/CD Consolidation**: Standardized on **Google Cloud Build** for production deployments; removed redundant GitHub Actions.
+- **Robust Build Tagging**: Integrated automatic commit SHA tagging for GitHub pushes with 'latest' fallback for manual builds.
+
+### Added
+
+- **Centralized Vision Service**: Refactored `VisionService` to use cross-project IAM and centralized project IDs.
+- **Enhanced Configuration**: Standardized `PROJECT_ID` management in `config.py`.
+
+### Fixed
+
+- **Secret Mismatch**: Corrected secret naming in `cloudbuild.yaml` (`telegram-bot-token`, `orchestrator-secret`).
+- **IAM Permissions**: Fixed `403 Permission Denied` on Vertex AI calls via service account binding.
+
 ## [1.2.0] - 2026-01-29
 
 ### Added

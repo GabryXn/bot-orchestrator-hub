@@ -58,7 +58,7 @@ Quando un utente esegue un comando che richiede uno script esterno:
 ```
 
 | Campo | Tipo | Descrizione |
-|-------|------|-------------|
+| :--- | :--- | :--- |
 | `auth_key` | string | Chiave segreta condivisa per autenticazione |
 | `action` | string | Nome dell'azione da eseguire |
 | `source` | enum | Piattaforma di origine |
@@ -81,7 +81,7 @@ Quando un utente esegue un comando che richiede uno script esterno:
 ```
 
 | Campo | Tipo | Descrizione |
-|-------|------|-------------|
+| :--- | :--- | :--- |
 | `success` | boolean | `true` se l'operazione è riuscita |
 | `action` | string | Echo dell'azione eseguita |
 | `data` | object? | Dati strutturati restituiti |
@@ -139,7 +139,7 @@ Permette a servizi esterni di inviare messaggi attraverso il bot.
 ## Codici di Errore
 
 | Codice HTTP | Significato |
-|-------------|-------------|
+| :--- | :--- |
 | 200 | Successo |
 | 401 | `auth_key` non valida |
 | 400 | Richiesta malformata |
@@ -196,7 +196,7 @@ function onHourlyTrigger() {
   // ... elaborazione ...
   
   // Invia notifica
-  UrlFetchApp.fetch("https://bot-orchestrator.run.app/api/send", {
+  UrlFetchApp.fetch("https://bot-orchestrator-tuoxploj4q-oc.a.run.app/api/send", {
     method: "post",
     contentType: "application/json",
     payload: JSON.stringify({
@@ -217,6 +217,5 @@ function onHourlyTrigger() {
 
 ## Versioning
 
-| Versione | Data | Note |
-|----------|-----|------|
+| 2.0.0 | 2026-02-10 | Hub-and-Spoke 2.0 & Milano Relocation |
 | 1.0.0 | 2026-01-28 | Versione iniziale |

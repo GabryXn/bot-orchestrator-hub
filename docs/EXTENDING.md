@@ -121,7 +121,7 @@ I tuoi script possono inviare messaggi attraverso il bot usando l'API `/api/send
 
 ```javascript
 function sendBotNotification(chatId, message) {
-  const orchestratorUrl = "https://bot-orchestrator-xyz.run.app/api/send";
+  const orchestratorUrl = "https://bot-orchestrator-tuoxploj4q-oc.a.run.app/api/send";
   const secret = PropertiesService.getScriptProperties().getProperty('ORCHESTRATOR_SECRET');
   
   const payload = {
@@ -219,7 +219,7 @@ function onScheduledTask() {
 ## File di Riferimento
 
 | File | Descrizione |
-|------|-------------|
+| :--- | :--- |
 | `config.py` | Registro comandi |
 | `handlers/commands.py` | Handler built-in |
 | `handlers/satellites.py` | Dispatcher satellite |
