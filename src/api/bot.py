@@ -84,7 +84,7 @@ async def send_proactive_message(request: ProactiveMessageRequest):
         try:
             reply_markup = None
             if request.message.reply_markup:
-                reply_markup = request.message.reply_markup.model_dump()
+                reply_markup = request.message.reply_markup.model_dump(exclude_none=True)
             
             result = await telegram_client.send_message(
                 chat_id=request.target.chat_id,
@@ -120,7 +120,7 @@ async def edit_message(request: EditMessageRequest):
         try:
             reply_markup = None
             if request.message.reply_markup:
-                reply_markup = request.message.reply_markup.model_dump()
+                reply_markup = request.message.reply_markup.model_dump(exclude_none=True)
             
             result = await telegram_client.edit_message_text(
                 chat_id=request.target.chat_id,
