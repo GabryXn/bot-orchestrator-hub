@@ -1,32 +1,35 @@
 """
-Vertex AI Geminin Service.
-Wrapper for Google Cloud Vertex AI (Generative AI).
+Vertex AI Gemini Service.
+Wrapper for Google AI Studio (Generative AI) - Free Tier.
 """
 
 import logging
-from typing import Optional, Any, Dict, List
-import vertexai
-from vertexai.generative_models import GenerativeModel, Part, Content, GenerationConfig
-from src.core.config import PROJECT_ID
+from typing import Optional
+from google import genai
+from google.genai import types
+from src.core.config import _settings
 
 logger = logging.getLogger(__name__)
 
 class VertexAIService:
-    """Service for interacting with Vertex AI Gemini models."""
+    """Service for interacting with Google AI Studio Gemini models (Free Tier)."""
 
-    def __init__(self, location: str = "europe-west1", model_name: str = "gemini-2.0-flash"):
-        self.location = location
+    def __init__(self, model_name: str = "gemini-2.0-flash"):
         self.model_name = model_name
+        self.client: Optional[genai.Client] = None
         self._initialized = False
 
     def _ensure_initialized(self):
-        """Lazy initialization of Vertex AI."""
+        """Lazy initialization of AI Studio Client."""
         if not self._initialized:
             try:
-                vertexai.init(project=PROJECT_ID, location=self.location)
+                if not _settings.gemini_api_key:
+                    logger.warning("GEMINI_API_KEY not set. AI features may fail.")
+                
+                self.client = genai.Client(api_key=_settings.gemini_api_key)
                 self._initialized = True
             except Exception as e:
-                logger.error(f"Failed to initialize Vertex AI: {e}")
+                logger.error(f"Failed to initialize AI Studio Client: {e}")
                 raise
 
     async def generate_content(
@@ -37,7 +40,7 @@ class VertexAIService:
         response_mime_type: Optional[str] = None,
     ) -> str:
         """
-        Generate content using Gemini.
+        Generate content using Gemini via AI Studio.
 
         Args:
             prompt: User prompt
@@ -51,30 +54,23 @@ class VertexAIService:
         self._ensure_initialized()
 
         try:
-            model = GenerativeModel(
-                model_name=self.model_name,
-                system_instruction=[system_instruction] if system_instruction else None,
-            )
-
-            config = GenerationConfig(
+            config = types.GenerateContentConfig(
                 temperature=temperature,
                 response_mime_type=response_mime_type,
+                system_instruction=system_instruction
             )
 
-            # Note: synchronous call in async wrapper for now, 
-            # ideally use async generation if library supports it fully non-blocking
-            # or run in executor. Vertex AI SDK has async methods now? 
-            # generate_content_async is available.
-            
-            response = await model.generate_content_async(
-                contents=[prompt],
-                generation_config=config,
+            # AI Studio SDK (google-genai) supports async
+            response = await self.client.aio.models.generate_content(
+                model=self.model_name,
+                contents=prompt,
+                config=config
             )
 
             return response.text
 
         except Exception as e:
-            logger.error(f"Vertex AI Generation Error: {e}")
+            logger.error(f"AI Studio Generation Error: {e}")
             raise
 
 gemini_service = VertexAIService()
