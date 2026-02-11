@@ -44,6 +44,12 @@ class Settings(BaseSettings):
         default="dev-secret-key",
         description="Shared secret for authenticating satellite scripts",
     )
+    
+    # AI Studio API Key (for Free Tier)
+    gemini_api_key: str = Field(
+        default="",
+        description="Google AI Studio API Key for Gemini",
+    )
 
     @field_validator("telegram_token", "orchestrator_secret", mode="before")
     @classmethod

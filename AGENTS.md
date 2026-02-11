@@ -4,10 +4,10 @@ This document provides context and guidelines for AI coding assistants (like Gem
 
 ## 🏛️ System Context (Hub-and-Spoke 2.0)
 
-- **Central Hub**: `bot-orchestrator-hub` (this project) is the master controller.
-- **AI Provider**: `YOUR_GCP_PROJECT_ID` (Personal Services) is the dedicated AI project.
+- **Central Hub**: `bot-orchestrator-hub` (this project) is the master controller. Gestisce **SOLO** la logica del bot Telegram (routing, comandi, messaggistica).
+- **API Provider**: `YOUR_GCP_PROJECT_ID` è il progetto GCP dedicato a **tutti i servizi API esterni** (Gemini, Vision). Possiede API Key, billing e quote. Il Hub usa le chiavi di PVS come proxy, NON possiede servizi AI.
 - **Region**: ALWAYS use **`europe-west8` (Milan)** for everything.
-- **Credentials**: Secrets are stored in GCP Secret Manager. Never hardcode them.
+- **Credentials**: Bot secrets (`TELEGRAM_TOKEN`, `ORCHESTRATOR_SECRET`) in GCP Secret Manager di `bot-orchestrator-hub`. API keys AI (`GEMINI_API_KEY`) create in `YOUR_GCP_PROJECT_ID` e montate come env var sul Cloud Run del Hub.
 
 ## 💻 Tech Stack & Standards
 

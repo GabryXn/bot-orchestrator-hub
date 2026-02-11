@@ -42,9 +42,63 @@ Abbiamo adottato un'architettura a **raggiera** (Hub-and-Spoke) per separare le 
 2. **I Spokes (Satelliti)**: Ecosistema di Script
     - **Ruolo**: Eseguono la logica di business specifica (es. "Script Spese", "Generatore Report", "Gestione Palestra"). Possono essere Google Apps Script, Cloud Functions o altri container.
     - **Comunicazione**: Via HTTP(S) asincrono. Il Hub invia un payload JSON standardizzato e il satellite risponde con l'esito.
-3. **Il Core AI (Servizi Condivisi)**: `YOUR_GCP_PROJECT_ID`
-    - **Ruolo**: Fornitore centralizzato di intelligenza. Gestisce le chiamate a Vertex AI (Gemini 1.5 Flash) e Cloud Vision (OCR).
-    - **Vantaggio**: Unico punto di fatturazione e gestione quote per tutti i progetti.
+3. **Il Progetto API (Servizi Centralizzati)**: `YOUR_GCP_PROJECT_ID`
+    - **Ruolo**: Progetto GCP dedicato **esclusivamente** alla gestione dei servizi API esterni (Gemini AI, Cloud Vision OCR). Possiede tutte le API Key, le quote e il billing.
+    - **Separazione**: Il Hub non "possiede" servizi AI — li **proxy** utilizzando le chiavi create in `YOUR_GCP_PROJECT_ID`. Questo garantisce un unico punto di fatturazione, gestione quote e configurazione per ogni servizio esterno, indipendentemente da quanti progetti li consumano.
+    - **Servizi gestiti**: Gemini 2.0 Flash (Free Tier via AI Studio), Cloud Vision API (OCR).
+
+### ⚠️ Separazione Progetti GCP — Regola Fondamentale
+
+L'ecosistema è distribuito su **3 progetti GCP distinti**, ciascuno con un ruolo preciso:
+
+| Progetto GCP | ID | Responsabilità | NON deve contenere |
+| :--- | :--- | :--- | :--- |
+| **Bot Orchestrator Hub** | `bot-orchestrator-hub` | Cloud Run, Telegram webhook, routing comandi, Secret Manager (bot token) | API Key di servizi AI, billing Vision/Gemini |
+| **Personal Vision Services** | `YOUR_GCP_PROJECT_ID` | API Key (Gemini, Vision), billing servizi AI, budget alerts, quota management | Container, servizi compute, bot logic |
+| **Script Spese** | Google Workspace | Apps Script, Sheets, Drive, Gmail (runtime satellite) | Nessuna risorsa GCP diretta |
+
+> **🚫 ERRORE DA EVITARE**: Non creare API Key per servizi AI (Gemini, Vision) dentro `bot-orchestrator-hub`. Tutte le chiavi API devono essere create in `YOUR_GCP_PROJECT_ID` e poi montate come env var sul Cloud Run del Hub. Questo mantiene la separazione dei costi: se un domani si aggiunge un nuovo progetto che usa AI, le quote e i costi rimangono centralizzati in un unico posto.
+
+**Come funziona concretamente:**
+
+```text
+┌─────────────────────────────────────┐
+│    YOUR_GCP_PROJECT_ID         │
+│    (Progetto GCP - API Provider)    │
+│                                     │
+│  🔑 GeminiAIStudioKey              │
+│     → generativelanguage.googleapis │
+│  🔑 ScriptSpeseKey2                │
+│     → vision.googleapis.com         │
+│  💰 Budget Alert: €0/mese          │
+└──────────────┬──────────────────────┘
+               │ API Keys montate come
+               │ env var su Cloud Run
+               ▼
+┌─────────────────────────────────────┐
+│    bot-orchestrator-hub             │
+│    (Progetto GCP - Bot Only)        │
+│                                     │
+│  ☁️ Cloud Run (bot-orchestrator)    │
+│  🔐 Secret Manager:                │
+│     → telegram-bot-token            │
+│     → orchestrator-secret           │
+│  📦 Env Var:                        │
+│     → GEMINI_API_KEY (da PVS)       │
+│  🔄 Cloud Build (CI/CD da GitHub)   │
+└──────────────┬──────────────────────┘
+               │ HTTP JSON Protocol
+               ▼
+┌─────────────────────────────────────┐
+│    Script Spese (Apps Script)       │
+│    (Google Workspace - Satellite)   │
+│                                     │
+│  ⚙️ Automazioni (GymReceipts,       │
+│     FamilyExpenses)                 │
+│  📊 Google Sheets (dati)            │
+│  📁 Google Drive (file sorgente)    │
+└─────────────────────────────────────┘
+```
 
 ### 🌍 La Scelta della Regione: Milano (europe-west8)
 
@@ -52,7 +106,7 @@ Tutta l'infrastruttura è stata migrata nella regione `europe-west8` (Milano).
 
 - **Latenza Minima**: Risposte ultra-veloci (pochi millisecondi) per interagire con i server di messaggistica e gli utenti in Italia.
 - **Compliance GDPR**: I dati sensibili processati (es. scontrini, spese) non lasciano mai l'Europa.
-- **Performance AI**: Accesso diretto ai nodi regionali di Vertex AI per inferenza rapida.
+- **Performance AI**: Accesso diretto ai servizi Google AI Studio per inferenza rapida.
 
 ---
 
@@ -162,10 +216,15 @@ L'interazione tra Hub e Satelliti avviene tramite un protocollo JSON rigoroso pe
 
 ### Secret Management
 
-Nessuna credenziale è salvata nel codice.
+Nessuna credenziale è salvata nel codice. Le credenziali sono distribuite tra 2 progetti GCP:
 
-- **Source**: Google Secret Manager (`telegram-bot-token`, `orchestrator-secret`).
-- **Runtime**: Montati come variabili d'ambiente o volumi in Cloud Run.
+| Variabile | Sorgente | Progetto GCP | Tipo |
+| :--- | :--- | :--- | :--- |
+| `TELEGRAM_TOKEN` | Secret Manager: `telegram-bot-token` | `bot-orchestrator-hub` | Secret |
+| `ORCHESTRATOR_SECRET` | Secret Manager: `orchestrator-secret` | `bot-orchestrator-hub` | Secret |
+| `GEMINI_API_KEY` | API Key: `GeminiAIStudioKey` | `YOUR_GCP_PROJECT_ID` | Env Var |
+
+> **Nota**: La `GEMINI_API_KEY` è creata nel progetto `YOUR_GCP_PROJECT_ID` (owner del billing AI) ma montata come variabile d'ambiente nel Cloud Run di `bot-orchestrator-hub`. Questo mantiene la separazione tra bot (hub) e servizi AI (PVS).
 
 ### Gestione Errori
 

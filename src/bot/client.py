@@ -157,6 +157,29 @@ class TelegramClient:
         
         return await self._request("editMessageText", data)
     
+    async def answer_callback_query(
+        self,
+        callback_query_id: str,
+        text: Optional[str] = None,
+        show_alert: bool = False,
+        url: Optional[str] = None,
+        cache_time: int = 0,
+    ) -> Dict[str, Any]:
+        """
+        Send an answer to a callback query.
+        """
+        data: Dict[str, Any] = {"callback_query_id": callback_query_id}
+        if text:
+            data["text"] = text
+        if show_alert:
+            data["show_alert"] = True
+        if url:
+            data["url"] = url
+        if cache_time:
+            data["cache_time"] = cache_time
+            
+        return await self._request("answerCallbackQuery", data)
+
     async def set_webhook(self, url: str, secret_token: Optional[str] = None) -> Dict[str, Any]:
         """
         Set the webhook URL for receiving updates.

@@ -63,12 +63,20 @@ class TelegramMessage(BaseModel):
         populate_by_name = True
 
 
+class CallbackQuery(BaseModel):
+    """Telegram callback query object."""
+    id: str
+    from_user: TelegramUser = Field(..., alias="from")
+    message: Optional[TelegramMessage] = None
+    data: Optional[str] = None
+    chat_instance: Optional[str] = None
+
 class TelegramUpdate(BaseModel):
     """Telegram webhook update object."""
     update_id: int
     message: Optional[TelegramMessage] = None
     edited_message: Optional[TelegramMessage] = None
-    # Add callback_query, inline_query, etc. as needed
+    callback_query: Optional[CallbackQuery] = None
 
 
 # =============================================================================
