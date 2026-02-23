@@ -169,3 +169,5 @@ uvicorn main:app --reload
 ## 📝 Licenza
 
 Uso privato.
+
+Jules è stato qui per un test di configurazione.
