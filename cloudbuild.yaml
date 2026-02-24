@@ -1,5 +1,5 @@
 # Cloud Build configuration for automatic deployments
-# Triggers on push to main branch
+# Triggers on push to master branch
 
 steps:
   # ==========================================================================
