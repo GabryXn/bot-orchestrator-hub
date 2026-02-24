@@ -38,3 +38,5 @@ When an agent is asked to add a new command or a new satellite:
 
 ---
 *Note: This file is a project standard. Updated 2026-02-10.*
+
+> **IMPORTANT**: Always update `SYSTEM_OVERVIEW.md` and `CHANGELOG.md` when architectural changes occur.
