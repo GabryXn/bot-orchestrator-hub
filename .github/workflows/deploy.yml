@@ -8,7 +8,7 @@ on:
 
 env:
   PROJECT_ID: bot-orchestrator-hub
-  REGION: us-central1
+  REGION: europe-west8
   SERVICE_NAME: bot-orchestrator
 
 jobs:
@@ -26,7 +26,8 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          credentials_json: ${{ secrets.GCP_SA_KEY }}
+          workload_identity_provider: WIF_PROVIDER_PLACEHOLDER
+          service_account: WIF_SERVICE_ACCOUNT_PLACEHOLDER
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@v2
