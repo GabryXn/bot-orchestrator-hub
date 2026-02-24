@@ -8,8 +8,9 @@ from typing import Optional, Dict, Any
 from datetime import datetime
 import httpx
 
-from models import RouterContext, SatelliteRequest, SatelliteRequestParams, SatelliteResponse
+from models import RouterContext, SatelliteRequest, SatelliteRequestParams, SatelliteResponse, ChatAction
 from config import ORCHESTRATOR_SECRET
+from telegram_client import telegram_client
 
 logger = logging.getLogger(__name__)
 
@@ -45,6 +46,12 @@ async def dispatch_to_satellite(
     
     logger.info(f"Dispatching to satellite: {target_url} | action: {action_name}")
     
+    # Send typing action to provide user feedback
+    try:
+        await telegram_client.send_chat_action(ctx.chat_id, ChatAction.TYPING)
+    except Exception as e:
+        logger.warning(f"Failed to send chat action: {e}")
+
     try:
         async with httpx.AsyncClient() as client:
             response = await client.post(

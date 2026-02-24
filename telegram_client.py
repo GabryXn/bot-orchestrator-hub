@@ -8,7 +8,7 @@ from typing import Optional, Dict, Any, Union
 import httpx
 
 from config import TELEGRAM_API_BASE, TELEGRAM_TOKEN
-from models import ParseMode
+from models import ParseMode, ChatAction
 
 logger = logging.getLogger(__name__)
 
@@ -75,6 +75,27 @@ class TelegramClient:
         
         return await self._request("sendMessage", data)
     
+    async def send_chat_action(
+        self,
+        chat_id: int,
+        action: Union[ChatAction, str] = "typing"
+    ) -> Dict[str, Any]:
+        """
+        Send a chat action (e.g., typing, upload_photo) to a chat.
+
+        Args:
+            chat_id: Target chat ID
+            action: Action to send (typing, upload_photo, etc.) - accepts string or ChatAction enum
+
+        Returns:
+            Telegram API response
+        """
+        data = {
+            "chat_id": chat_id,
+            "action": action.value if isinstance(action, ChatAction) else action,
+        }
+        return await self._request("sendChatAction", data)
+
     async def set_webhook(self, url: str, secret_token: Optional[str] = None) -> Dict[str, Any]:
         """
         Set the webhook URL for receiving updates.
