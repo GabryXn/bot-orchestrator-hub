@@ -54,3 +54,4 @@ Envioment.txt
 # Local testing
 test_*.py
 *_test.py
+deploy/
