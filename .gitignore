@@ -56,3 +56,8 @@ Envioment.txt
 test_*.py
 *_test.py
 deploy/
+
+# >>> GitSync-KDE (auto-managed — do not remove) >>>
+# KDE folder icon (managed by GitSync-KDE)
+.directory
+# <<< GitSync-KDE <<<
