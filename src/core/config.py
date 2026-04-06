@@ -12,7 +12,6 @@ from typing import Any
 from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
-
 # =============================================================================
 # SETTINGS CLASS
 # =============================================================================
@@ -44,7 +43,7 @@ class Settings(BaseSettings):
         default="dev-secret-key",
         description="Shared secret for authenticating satellite scripts",
     )
-    
+
     # AI Studio API Key (for Free Tier)
     gemini_api_key: str = Field(
         default="",
@@ -224,6 +223,9 @@ def validate_config() -> bool:
         logging.warning(
             "ORCHESTRATOR_SECRET is using default value. Set a secure secret in production!"
         )
+
+    if not SATELLITE_APPS_SCRIPT_URL:
+        logging.warning("SATELLITE_APPS_SCRIPT_URL is not set. Satellite commands will not work.")
 
     if errors:
         raise ValueError("Configuration errors: " + "; ".join(errors))

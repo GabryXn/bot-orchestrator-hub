@@ -222,6 +222,7 @@ Nessuna credenziale è salvata nel codice. Le credenziali sono distribuite tra 2
 | :--- | :--- | :--- | :--- |
 | `TELEGRAM_TOKEN` | Secret Manager: `telegram-bot-token` | `bot-orchestrator-hub` | Secret |
 | `ORCHESTRATOR_SECRET` | Secret Manager: `orchestrator-secret` | `bot-orchestrator-hub` | Secret |
+| `SATELLITE_APPS_SCRIPT_URL` | Secret Manager: `satellite-apps-script-url` | `bot-orchestrator-hub` | Secret |
 | `GEMINI_API_KEY` | API Key: `GeminiAIStudioKey` | `YOUR_GCP_PROJECT_ID` | Env Var |
 
 > **Nota**: La `GEMINI_API_KEY` è creata nel progetto `YOUR_GCP_PROJECT_ID` (owner del billing AI) ma montata come variabile d'ambiente nel Cloud Run di `bot-orchestrator-hub`. Questo mantiene la separazione tra bot (hub) e servizi AI (PVS).
