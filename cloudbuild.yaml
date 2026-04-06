@@ -48,7 +48,7 @@ steps:
       # Timeout
       - '--timeout=60s'
       # Secrets from Secret Manager
-      - '--set-secrets=TELEGRAM_TOKEN=telegram-bot-token:latest,ORCHESTRATOR_SECRET=orchestrator-secret:latest'
+      - '--set-secrets=TELEGRAM_TOKEN=telegram-bot-token:latest,ORCHESTRATOR_SECRET=orchestrator-secret:latest,SATELLITE_APPS_SCRIPT_URL=satellite-apps-script-url:latest'
 
 # Store images in Container Registry
 images:

@@ -7,7 +7,7 @@ import logging
 from typing import Optional
 
 from src.bot.models import RouterContext, TelegramUpdate, Platform
-from src.core.config import COMMAND_REGISTRY
+from src.core.config import COMMAND_REGISTRY, SATELLITE_APPS_SCRIPT_URL
 from src.bot.handlers.commands import handle_builtin_command
 from src.bot.handlers.satellites import dispatch_to_satellite
 from src.bot.client import telegram_client
@@ -120,7 +120,7 @@ async def route_message(ctx: RouterContext) -> None:
         # TODO: Move this mapping to config/registry for better scalability
         if action_prefix in ["confirm_fam", "reject_fam"]:
             # Route to Family Expenses Script
-            target_url = "https://script.google.com/macros/s/REDACTED_SCRIPT_ID/exec"
+            target_url = SATELLITE_APPS_SCRIPT_URL
             
             # Acknowledge the callback first (stop spinner)
             cq_id = ctx.raw_update["callback_query"]["id"]

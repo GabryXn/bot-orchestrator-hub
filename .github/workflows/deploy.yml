@@ -26,8 +26,8 @@ jobs:
       - name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: WIF_PROVIDER_PLACEHOLDER
-          service_account: WIF_SERVICE_ACCOUNT_PLACEHOLDER
+          workload_identity_provider: ${{ secrets.WIF_PROVIDER }}
+          service_account: ${{ secrets.WIF_SERVICE_ACCOUNT }}
           project_id: ${{ env.PROJECT_ID }}
 
       - name: Set up Cloud SDK
@@ -58,7 +58,7 @@ jobs:
             --allow-unauthenticated \
             --memory 512Mi \
             --max-instances 1 \
-            --set-secrets "TELEGRAM_TOKEN=telegram-bot-token:latest,ORCHESTRATOR_SECRET=orchestrator-secret:latest"
+            --set-secrets "TELEGRAM_TOKEN=telegram-bot-token:latest,ORCHESTRATOR_SECRET=orchestrator-secret:latest,SATELLITE_APPS_SCRIPT_URL=satellite-apps-script-url:latest"
 
       - name: Show deployed URL
         run: |

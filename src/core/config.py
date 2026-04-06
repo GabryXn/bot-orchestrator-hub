@@ -51,6 +51,14 @@ class Settings(BaseSettings):
         description="Google AI Studio API Key for Gemini",
     )
 
+    # -------------------------------------------------------------------------
+    # Satellite Configuration
+    # -------------------------------------------------------------------------
+    satellite_apps_script_url: str = Field(
+        default="",
+        description="Google Apps Script deployment URL for satellite scripts",
+    )
+
     @field_validator("telegram_token", "orchestrator_secret", mode="before")
     @classmethod
     def strip_whitespace(cls, v: str) -> str:
@@ -64,7 +72,7 @@ class Settings(BaseSettings):
     # Project Metadata
     # -------------------------------------------------------------------------
     gcp_project_id: str = Field(
-        default="YOUR_GCP_PROJECT_ID",
+        default="",
         description="Google Cloud Project ID",
     )
     service_name: str = Field(
@@ -125,6 +133,7 @@ PROJECT_ID: str = _settings.gcp_project_id
 SERVICE_NAME: str = _settings.service_name
 LOG_LEVEL: str = _settings.log_level
 TELEGRAM_API_BASE: str = _settings.telegram_api_base
+SATELLITE_APPS_SCRIPT_URL: str = _settings.satellite_apps_script_url
 
 
 # =============================================================================
@@ -136,6 +145,9 @@ TELEGRAM_API_BASE: str = _settings.telegram_api_base
 #   1. Add an entry to COMMAND_REGISTRY below
 #   2. If handler_type is "builtin", implement the handler in src/bot/handlers/commands.py
 #   3. If handler_type is "satellite", provide the target_url and action_name
+#
+# The target_url for satellite commands is read from SATELLITE_APPS_SCRIPT_URL
+# (env var: SATELLITE_APPS_SCRIPT_URL). Set it in your .env file or Cloud Run env vars.
 #
 
 COMMAND_REGISTRY: dict[str, dict[str, Any]] = {
@@ -168,7 +180,7 @@ COMMAND_REGISTRY: dict[str, dict[str, Any]] = {
         "description": "Apri il foglio spese",
         "handler_type": "satellite",
         "category": "Script Spese",
-        "target_url": "https://script.google.com/macros/s/REDACTED_SCRIPT_ID/exec",
+        "target_url": SATELLITE_APPS_SCRIPT_URL,
         "action_name": "get_sheet_link",
     },
     # ==========================================================================
@@ -178,14 +190,14 @@ COMMAND_REGISTRY: dict[str, dict[str, Any]] = {
         "description": "Genera report spese palestra",
         "handler_type": "satellite",
         "category": "Script Spese",
-        "target_url": "https://script.google.com/macros/s/REDACTED_SCRIPT_ID/exec",
+        "target_url": SATELLITE_APPS_SCRIPT_URL,
         "action_name": "process_gym_receipts",
     },
     "/spesefamiglia": {
         "description": "Genera report spese famiglia 👨‍👩‍👧",
         "handler_type": "satellite",
         "category": "Spese Famiglia",
-        "target_url": "https://script.google.com/macros/s/REDACTED_SCRIPT_ID/exec",
+        "target_url": SATELLITE_APPS_SCRIPT_URL,
         "action_name": "process_family_expenses",
     },
 }
