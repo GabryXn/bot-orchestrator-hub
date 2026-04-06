@@ -29,6 +29,7 @@ GCP_Shared_Env/
 
 # Environment variables
 .env
+.env.*
 .env.local
 .env.*.local
 
@@ -36,6 +37,12 @@ GCP_Shared_Env/
 *.json
 !package.json
 service-account*.json
+*.pem
+*.key
+*.cert
+*.p12
+*.pfx
+*.secret
 
 # MacOS
 .DS_Store
