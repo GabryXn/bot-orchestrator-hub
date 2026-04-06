@@ -8,7 +8,7 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.109%2B-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Google Cloud Run](https://img.shields.io/badge/Google_Cloud-Run-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com/run)
 [![Docker](https://img.shields.io/badge/Docker-Multi--Stage-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://www.docker.com/)
-[![License](https://img.shields.io/badge/License-Private-red?style=for-the-badge)](https://choosealicense.com/no-permission/)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 [![Region](https://img.shields.io/badge/Region-Milan_(eur--west8)-green?style=for-the-badge&logo=google-earth&logoColor=white)](https://cloud.google.com/about/locations)
 
 *Un orchestratore centralizzato e scalabile per la gestione di bot multi-piattaforma.*
