@@ -64,6 +64,10 @@ test_*.py
 *_test.py
 deploy/
 
+# Temporary token files (must never be committed)
+*.tmp
+.token*
+
 # >>> GitSync-KDE (auto-managed — do not remove) >>>
 # KDE folder icon (managed by GitSync-KDE)
 .directory
