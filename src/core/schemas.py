@@ -1,3 +1,8 @@
+"""
+Shared Pydantic schemas for the Bot Orchestrator Hub.
+Defines the standard request and response payloads used in the Hub-and-Spoke protocol.
+"""
+
 from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, Literal
 

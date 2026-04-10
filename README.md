@@ -143,6 +143,37 @@ L'immagine Docker è costruita con una strategia **Multi-Stage Build** per minim
 
 ---
 
+## 💻 Guida all'Installazione Locale
+
+Il progetto utilizza [uv](https://github.com/astral-sh/uv) per una gestione veloce e affidabile delle dipendenze.
+
+### Prerequisiti
+- `uv` installato sulla tua macchina.
+- Python 3.12+.
+
+### Step di Setup
+1. **Clona il repository**:
+   ```bash
+   git clone https://github.com/GabryXn/bot-orchestrator-hub.git
+   cd bot-orchestrator-hub
+   ```
+2. **Installa le dipendenze**:
+   ```bash
+   uv sync --dev
+   ```
+3. **Configura l'ambiente**:
+   Copia il file `.env.example` in `.env` e inserisci il tuo `TELEGRAM_TOKEN` e `ORCHESTRATOR_SECRET`.
+   ```bash
+   cp .env.example .env
+   ```
+4. **Avvia il server**:
+   ```bash
+   uv run uvicorn src.main:app --reload
+   ```
+   L'API sarà disponibile su `http://127.0.0.1:8000`.
+
+---
+
 ## 🛠️ Guida allo Sviluppo ed Estensione
 
 Il sistema è progettato per essere esteso senza riscrivere il core.
@@ -212,6 +243,36 @@ L'interazione tra Hub e Satelliti avviene tramite un protocollo JSON rigoroso pe
 
 ---
 
+## 🧠 API Services (Gemini & Vision)
+
+L'Hub espone endpoint centralizzati per permettere ai satelliti di utilizzare l'AI senza gestire chiavi API multiple.
+
+### 1. Gemini Analyze
+Utilizza Gemini 2.0 Flash per analisi testuali.
+```bash
+curl -X POST "https://[HUB_URL]/api/services/gemini/analyze" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "auth_key": "YOUR_ORCHESTRATOR_SECRET",
+       "user_text": "Estrai i dati principali da questo messaggio...",
+       "system_instruction": "Rispondi in formato JSON."
+     }'
+```
+
+### 2. Vision OCR
+Esegue l'OCR su immagini o PDF codificati in Base64.
+```bash
+curl -X POST "https://[HUB_URL]/api/services/vision/ocr" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "auth_key": "YOUR_ORCHESTRATOR_SECRET",
+       "image_base64": "[BASE64_CONTENT]",
+       "mime_type": "image/jpeg"
+     }'
+```
+
+---
+
 ## 🔐 Sicurezza e Gestione Errori
 
 ### Secret Management
@@ -246,4 +307,4 @@ Il sistema è resiliente ai fallimenti:
 | **Test Locale** | `uvicorn src.main:app --reload` |
 
 ---
-*Documentazione generata automaticamente dall'Assistente Virtuale - Febbraio 2026*
+*Documentazione generata automaticamente dall'Assistente Virtuale - Aprile 2026*

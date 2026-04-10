@@ -105,7 +105,65 @@ Updates an existing message text. Useful for progress bars or status updates.
 
 ---
 
-### 3. Health Check
+### 3. Gemini Analyze
+
+Analyze content using Vertex AI Gemini 2.0 Flash.
+
+**Endpoint:** `POST /api/services/gemini/analyze`
+
+**Request Body:**
+
+```json
+{
+  "auth_key": "YOUR_SECRET_KEY",
+  "user_text": "Extract total amount and date from this text: ...",
+  "system_instruction": "You are a financial assistant. Return JSON.",
+  "temperature": 0.2,
+  "response_mime_type": "application/json"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "content": "{\"amount\": 42.50, \"date\": \"2026-04-07\"}",
+  "error": null
+}
+```
+
+---
+
+### 4. Vision OCR
+
+Perform Optical Character Recognition on an image or PDF.
+
+**Endpoint:** `POST /api/services/vision/ocr`
+
+**Request Body:**
+
+```json
+{
+  "auth_key": "YOUR_SECRET_KEY",
+  "image_base64": "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==",
+  "mime_type": "image/jpeg"
+}
+```
+
+**Response (200 OK):**
+
+```json
+{
+  "success": true,
+  "text": "Extracted text from image...",
+  "error": null
+}
+```
+
+---
+
+### 5. Health Check
 
 Verifies service status. Used by Cloud Run and monitoring tools.
 
