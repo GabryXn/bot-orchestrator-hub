@@ -73,4 +73,5 @@ class VertexAIService:
             logger.error(f"AI Studio Generation Error: {e}")
             raise
 
+# UNUSED: verifica se eliminabile
 gemini_service = VertexAIService()
