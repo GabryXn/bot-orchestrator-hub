@@ -4,7 +4,7 @@ Handles Telegram webhooks and proactive messaging.
 """
 
 from typing import Any, Dict
-from fastapi import APIRouter, BackgroundTasks, HTTPException, Request, Depends
+from fastapi import APIRouter, BackgroundTasks, HTTPException, Request
 from pydantic import ValidationError
 import structlog
 

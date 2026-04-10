@@ -3,8 +3,8 @@ Services API Endpoints.
 Exposes Gemini and Vision capabilities to external scripts.
 """
 
-from typing import Optional, List
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Body
+from typing import Optional
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 import structlog
 import base64

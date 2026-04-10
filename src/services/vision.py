@@ -4,9 +4,8 @@ Wrapper for OCR and image analysis.
 """
 
 import logging
-from typing import Optional, List
+from typing import Optional
 from google.cloud import vision
-from google.cloud.vision import AnnotateImageResponse
 
 from src.core.config import PROJECT_ID
 
@@ -45,10 +44,7 @@ class VisionService:
             
             if response.error.message:
                 raise Exception(f"Vision API Error: {response.error.message}")
-            
-            # For DOCUMENT_TEXT_DETECTION usage:
-            # response = self.client.document_text_detection(image=image)
-            
+
             # Using text_detection (TEXT_DETECTION) as generic OCR
             if response.full_text_annotation:
                 return response.full_text_annotation.text
@@ -114,4 +110,5 @@ class VisionService:
             logger.error(f"OCR PDF Error: {e}")
             raise
 
+# UNUSED: verifica se eliminabile
 vision_service = VisionService()
