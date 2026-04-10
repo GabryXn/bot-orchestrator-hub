@@ -1,4 +1,9 @@
 
+"""
+Logging configuration for the Bot Orchestrator.
+Sets up structured logging (JSON for production, pretty-print for development).
+"""
+
 import logging
 import sys
 import structlog
