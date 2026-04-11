@@ -123,7 +123,7 @@ async def route_message(ctx: RouterContext) -> None:
             target_url = SATELLITE_APPS_SCRIPT_URL
             
             # Acknowledge the callback first (stop spinner)
-            cq_id = ctx.raw_update["callback_query"]["id"]
+            cq_id = ctx.raw_update["callback_query"].get("id")
             await telegram_client.answer_callback_query(cq_id, text="🔄 Elaborazione in corso...")
             
             # Dispatch to satellite
@@ -133,7 +133,7 @@ async def route_message(ctx: RouterContext) -> None:
         else:
             # Unknown callback
             logger.warning(f"Unknown callback prefix: {action_prefix}")
-            cq_id = ctx.raw_update["callback_query"]["id"]
+            cq_id = ctx.raw_update["callback_query"].get("id")
             await telegram_client.answer_callback_query(cq_id, text="⚠️ Azione sconosciuta", show_alert=True)
             return
 
