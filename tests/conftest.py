@@ -5,9 +5,6 @@ Pytest configuration and shared fixtures.
 import pytest
 from unittest.mock import AsyncMock, MagicMock
 
-from fastapi.testclient import TestClient
-
-
 @pytest.fixture
 def mock_telegram_client():
     """Mock Telegram client for testing without API calls."""
