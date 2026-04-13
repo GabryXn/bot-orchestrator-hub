@@ -57,9 +57,10 @@ class TelegramClient:
             response = await client.post(url, json=data)
             result = response.json()
             
-            if not result.get("ok"):
+            if not isinstance(result, dict) or not result.get("ok"):
                 logger.error(f"Telegram API error: {result}")
-                return {"ok": False, "error": result.get("description", "Unknown error")}
+                error_msg = result.get("description", "Unknown error") if isinstance(result, dict) else "Unexpected response format"
+                return {"ok": False, "error": error_msg}
             
             return result
         except httpx.TimeoutException as e:
@@ -79,7 +80,11 @@ class TelegramClient:
         
         try:
             response = await client.get(url)
-            return response.json()
+            result = response.json()
+            if not isinstance(result, dict):
+                logger.error(f"Telegram API unexpected GET response: {result}")
+                return {"ok": False, "error": "Unexpected response format"}
+            return result
         except Exception as e:
             logger.error(f"GET request failed: {e}")
             return {"ok": False, "error": str(e)}
