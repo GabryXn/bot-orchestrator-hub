@@ -124,7 +124,8 @@ async def route_message(ctx: RouterContext) -> None:
             
             # Acknowledge the callback first (stop spinner)
             cq_id = ctx.raw_update["callback_query"].get("id")
-            await telegram_client.answer_callback_query(cq_id, text="🔄 Elaborazione in corso...")
+            if cq_id:
+                await telegram_client.answer_callback_query(cq_id, text="🔄 Elaborazione in corso...")
             
             # Dispatch to satellite
             # We send the full callback data as 'text'
@@ -134,7 +135,8 @@ async def route_message(ctx: RouterContext) -> None:
             # Unknown callback
             logger.warning(f"Unknown callback prefix: {action_prefix}")
             cq_id = ctx.raw_update["callback_query"].get("id")
-            await telegram_client.answer_callback_query(cq_id, text="⚠️ Azione sconosciuta", show_alert=True)
+            if cq_id:
+                await telegram_client.answer_callback_query(cq_id, text="⚠️ Azione sconosciuta", show_alert=True)
             return
 
     # CASE 3: Normal Message

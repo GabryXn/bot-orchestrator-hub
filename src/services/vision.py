@@ -42,7 +42,7 @@ class VisionService:
             image = vision.Image(content=content)
             response = self.client.text_detection(image=image)
             
-            if response.error.message:
+            if hasattr(response, "error") and response.error.message:
                 raise Exception(f"Vision API Error: {response.error.message}")
 
             # Using text_detection (TEXT_DETECTION) as generic OCR
@@ -95,7 +95,7 @@ class VisionService:
                 return ""
 
             file_response = response.responses[0]
-            if file_response.error.message:
+            if hasattr(file_response, "error") and file_response.error.message:
                 raise Exception(f"Vision API File Error: {file_response.error.message}")
             
             # Combine text from all pages
