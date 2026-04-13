@@ -24,11 +24,6 @@ async def mock_call_satellite(action: str, params: Dict[str, Any]):
     print(f"🚀 MOCK HUB -> SATELLITE")
     print(f"URL: {MOCK_SATELLITE_URL}")
     print(f"Payload:\n{json.dumps(payload.model_dump(), indent=2)}")
-    
-    # Here you could actually use httpx to call the real deployment if you wanted
-    # async with httpx.AsyncClient() as client:
-    #     resp = await client.post(MOCK_SATELLITE_URL, json=payload.model_dump())
-    #     print(f"Response: {resp.text}")
 
 if __name__ == "__main__":
     action = sys.argv[1] if len(sys.argv) > 1 else "process_gym_receipts"
